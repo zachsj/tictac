@@ -20,7 +20,7 @@ function Square({ value, onSquareClick }: SquareProps) {
 // Define the Board component as the main game board
 export default function Board() {
   // State to track whose turn it is (true for X, false for O)
-  const [xIsNext, setXIsNext] = useState(true);
+  const [xIsNext, setXIsNext] = useState(true); //X player goes first
   // State to track the squares, initialized with an array of 9 null values
   const [squares, setSquares] = useState(Array(9).fill(null));
 
