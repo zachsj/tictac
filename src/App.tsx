@@ -45,10 +45,19 @@ export default function Board() {
     // Toggle the turn
     setXIsNext(!xIsNext);
   }
+  
+  const winner = calculateWinner(squares);
+  let status;
+  if (winner) {
+    status = "Winner: " + winner;
+  } else {
+    status = "Next player: " + (xIsNext ? "X" : "O");
+  }
 
   // Render the board with three rows of squares
   return (
     <>
+      <div className="status">{status}</div>
       <div className="board-row">
         {/* Render squares for the first row */}
         <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
