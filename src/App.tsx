@@ -17,20 +17,20 @@ function Square({ value, onSquareClick }: SquareProps) {
   );
 }
 
+interface BoardProps {
+  xIsNext: boolean;
+  squares: (string | null)[];
+  onPlay: (nextSquares: (string | null)[]) => void;
+}
 // Define the Board component as the main game board
-export default function Board() {
-  // State to track whose turn it is (true for X, false for O)
-  const [xIsNext, setXIsNext] = useState(true); //X player goes first
-  // State to track the squares, initialized with an array of 9 null values
-  const [squares, setSquares] = useState(Array(9).fill(null));
+function Board({ xIsNext, squares, onPlay }: BoardProps) {
 
   // Function to handle clicks on the squares
   function handleClick(i: number) {
     // Return early if the square already has an "X" or "O"
-    if (squares[i] || calculateWinner(squares)) {
+    if (calculateWinner(squares) || squares[i]) {
       return;
     }
-    
     // Create a copy of the current squares array
     const nextSquares = squares.slice();
     // Set the clicked square to "X" or "O" based on whose turn it is
@@ -39,13 +39,9 @@ export default function Board() {
     } else {
       nextSquares[i] = "O"; // Set to "O" if it's O's turn
     }
-    
-    // Update the squares state with the new squares array
-    setSquares(nextSquares);
-    // Toggle the turn
-    setXIsNext(!xIsNext);
+    onPlay(nextSquares);
   }
-  
+
   const winner = calculateWinner(squares);
   let status;
   if (winner) {
@@ -80,7 +76,29 @@ export default function Board() {
   );
 }
 
-function calculateWinner(squares: (string | null)[]): string | null {
+export default function Game() {
+  const [xIsNext, setXIsNext] = useState(true);
+  const [history, setHistory] = useState([Array(9).fill(null)]);
+  const currentSquares = history[history.length - 1];
+
+  function handlePlay(nextSquares: (string | null)[]) {
+    setHistory([...history, nextSquares]); //creates a new array that contains all the items in history, followed by nextSquares
+    setXIsNext(!xIsNext);
+  }
+
+  return (
+    <div className="game">
+      <div className="game-board">
+        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+      </div>
+      <div className="game-info">
+        <ol>{/*TODO*/}</ol>
+      </div>
+    </div>
+  );
+}
+
+function calculateWinner(squares: (string | null)[]) {
   const lines = [
     [0, 1, 2],
     [3, 4, 5],
