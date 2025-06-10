@@ -20,14 +20,14 @@ function Square({ value, onSquareClick }: SquareProps) {
 // Define the Board component as the main game board
 export default function Board() {
   // State to track whose turn it is (true for X, false for O)
-  const [xIsNext, setXIsNext] = useState(true);
+  const [xIsNext, setXIsNext] = useState(true); //X player goes first
   // State to track the squares, initialized with an array of 9 null values
   const [squares, setSquares] = useState(Array(9).fill(null));
 
   // Function to handle clicks on the squares
   function handleClick(i: number) {
     // Return early if the square already has an "X" or "O"
-    if (squares[i]) {
+    if (squares[i] || calculateWinner(squares)) {
       return;
     }
     
@@ -71,4 +71,22 @@ export default function Board() {
   );
 }
 
-
+function calculateWinner(squares: (string | null)[]): string | null {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+  ];
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
+  }
+  return null;
+}
